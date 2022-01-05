@@ -1,5 +1,7 @@
-import React from 'react'
+import React,{ useState } from 'react'
+
 import { getAuth,signInWithPopup } from 'firebase/auth'
+import { useNavigate } from 'react-router-dom'
 
 import { provider } from '../services/firebase'
 
@@ -11,13 +13,36 @@ import principalWoman from '../assets/images/principal-woman.jpg'
 import { FcGoogle } from 'react-icons/fc'
 
 export function Home() {
+    interface userType {
+        name:string,
+        photo:string,
+        xp:number,
+        isFirstTime:boolean
+    }
+
+    const  [isOpen,setOpen] = useState<boolean>(false)
+
+    const navigate = useNavigate()
 
     const handleSignIn = ()=>{
         const auth = getAuth()
         console.log('..')
         signInWithPopup(auth,provider)
         .then((result:any ) =>{
-            console.log(result)
+            const user: userType = {
+                name: result.user.displayName,
+                photo:result.user.photoURL,
+                xp:0,
+                isFirstTime:true
+            }
+
+            if(!user.name || !user.photo) {
+                return
+            }
+
+            else {
+                navigate('/workout')
+            }
         })
     }
 
