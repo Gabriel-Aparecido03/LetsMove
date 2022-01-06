@@ -1,11 +1,15 @@
-import React,{ useState } from 'react'
+import React from 'react'
 
-import { getAuth,signInWithPopup } from 'firebase/auth'
+import { signInWithPopup } from 'firebase/auth'
+import { ref,set,get,child } from 'firebase/database'
 import { useNavigate } from 'react-router-dom'
 
-import { provider } from '../services/firebase'
+import { provider,database,auth } from '../services/firebase'
 
+import "react-toastify/dist/ReactToastify.css";
 import '../styles/pages/Home.scss'
+
+import { ToastContainer, toast} from 'react-toastify'
 
 import logo from '../assets/images/logo.png'
 import principalWoman from '../assets/images/principal-woman.jpg'
@@ -16,37 +20,54 @@ export function Home() {
     interface userType {
         name:string,
         photo:string,
+        id:string,
         xp:number,
-        isFirstTime:boolean
+        completedCycles:number
     }
-
-    const  [isOpen,setOpen] = useState<boolean>(false)
 
     const navigate = useNavigate()
 
+    const errorToast= ()=> {
+        toast.error('Desculpe houve um erro inesperado com os serviços de Autenticação da Google')
+    }
+
     const handleSignIn = ()=>{
-        const auth = getAuth()
-        console.log('..')
+
         signInWithPopup(auth,provider)
         .then((result:any ) =>{
             const user: userType = {
                 name: result.user.displayName,
                 photo:result.user.photoURL,
+                id:result.user.uid,
                 xp:0,
-                isFirstTime:true
+                completedCycles:0
             }
+            user.name? handleRegistred(user):errorToast()
+        })
+    }
 
-            if(!user.name || !user.photo) {
-                return
-            }
+    async function registrerInDatabase(user: userType) {
+        await set(ref(database, "users/" + user.id),{
+            name: user.name,
+            photo:user.photo,
+            id:user.id,
+            xp:user.xp,
+            completedCycles:user.completedCycles
+        })
 
-            else {
-                navigate('/workout')
-            }
+        navigate(`Myprofile/${user.id}`)
+    }
+
+    function handleRegistred(user: userType) {
+        const databaseRef = ref(database)
+
+        get(child(databaseRef,`users/${user.id}`)).then((snapshot) =>{
+            snapshot.exists() ? navigate(`Workout/${user.id}`) : registrerInDatabase(user)
         })
     }
 
     return(
+       
         <div id="home">
             <aside>
                 <div className="aside-content">
@@ -60,6 +81,12 @@ export function Home() {
                     <button onClick={handleSignIn}><FcGoogle/> <strong>Faça acesso com uma conta Google</strong></button>
                 </div>
             </main>
+            <ToastContainer
+                autoClose={2000}
+                position="top-center"
+                className="toast-container"
+                toastClassName="dark-toast"
+            />
         </div>
     )
 }

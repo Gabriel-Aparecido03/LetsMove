@@ -1,0 +1,55 @@
+.side-bar {
+    height: 100%;
+    width: 4%;
+    
+    position: fixed;
+    
+    z-index: 1;
+    top: 0;
+    left: 0;
+    
+    overflow-x: hidden;
+    padding-top: 20px;
+
+    background-color: #ff4a4a;
+
+    img {
+        position: fixed;
+        
+        top: 0;
+        left: 0;
+        
+        width: 4%;
+        
+        background-color:#ffff;
+
+        border-right-color: #ff0000;
+        border-right-width: 2px;
+        border-right-style: solid;
+    }
+
+    img:hover {
+        cursor: pointer;
+    }
+}
+
+.icons-content {
+    
+    display: flex;
+    text-align: center;
+    justify-content: center;
+
+    ul{
+        list-style: none;
+    }
+    
+    li{
+        color: #fff;
+        padding: .9rem;
+    }
+    
+    li:hover {
+        cursor: pointer;
+        color: black;
+    }
+}
