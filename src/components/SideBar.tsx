@@ -6,15 +6,23 @@ import { useNavigate } from 'react-router-dom'
 
 import  logo  from '../assets/images/logo.png'
 
+import { useAuth } from '../hooks/useAuth'
+
 import { AiOutlineHome } from 'react-icons/ai'
 import { BsFillPersonFill } from 'react-icons/bs'
 
 export function SideBar() {
 
-    const navigate = useNavigate
+    const {user} = useAuth()
+
+    const navigate = useNavigate()
 
     const handleNavigateToHome = ()=> {
-        
+        navigate(`/Workout/${user?.id}`)
+    }
+
+    const handleNavigateToProfile =()=>{
+        navigate(`/Myprofile/${user?.id}`)
     }
     return(
         <aside className="side-bar">
@@ -22,8 +30,8 @@ export function SideBar() {
             <div className="side-bar-content">
                 <div className="icons-content">
                     <ul>
-                        <li><AiOutlineHome /></li>
-                        <li><BsFillPersonFill/></li>
+                        <li><AiOutlineHome onClick={()=>handleNavigateToHome}/></li>
+                        <li><BsFillPersonFill onClick={handleNavigateToProfile}/></li>
                     </ul>
                 </div>
             </div>
