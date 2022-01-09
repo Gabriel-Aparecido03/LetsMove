@@ -4,16 +4,69 @@
     margin: 5rem;
 
     main {
+
         display: flex;
-        justify-content:center;
 
-        height: 90%;
-
-        padding: 4rem;
+        padding: 2rem;
+        padding-left: 0;
         border-radius: .5rem;
         background-color: rgb(173, 173, 173);
     }
 
-    
+    .informations-content {
+
+        margin:.4rem ;
+
+        background-color: #fff;
+        border-radius:.4rem;
+
+        padding: .4rem;
+
+        display: table-cell;
+        width:50%;
+        text-align:left;
+        display: inline-block;
+
+        text-align:center;
+        h1 {
+            text-align:center;
+        }
+
+        p {
+            height:50%;
+        }
+    }
+
+    .photo-content {
+
+        background-color: #fff;
+        border-radius:.4rem;
+
+        padding: .4rem;
+
+        margin:.4rem ;
+
+        float: right;
+        width:50%;
+        img {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+
+            border-radius: 4rem;
+        }
+
+        .login-content {
+
+            display: flex;
+            justify-content:center;
+
+            p {
+                display: inline-block;
+                padding:.5rem;
+                
+            }
+        }
+    }
 }
 

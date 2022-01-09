@@ -26,11 +26,11 @@ export function SideBar() {
     }
     return(
         <aside className="side-bar">
-             <img src={logo} alt="imagem do logo"  />
+             <img onClick ={handleNavigateToHome} src={logo} alt="imagem do logo"  />
             <div className="side-bar-content">
                 <div className="icons-content">
                     <ul>
-                        <li><AiOutlineHome onClick={()=>handleNavigateToHome}/></li>
+                        <li><AiOutlineHome onClick={handleNavigateToHome}/></li>
                         <li><BsFillPersonFill onClick={handleNavigateToProfile}/></li>
                     </ul>
                 </div>

@@ -1,0 +1,122 @@
+#workout {
+    main {
+        margin: 2.4rem;
+        margin-left: 8rem;
+
+        display: flex;
+        text-align: center;
+        justify-content: center;
+
+        font-family: 'Poppins' ,'sans-serif';
+    }
+}
+
+.profile-content {
+    float: left;
+    width:70%;
+
+    img {
+        width: 25%;
+        border-radius: 6rem;
+    }
+
+    .name-profile {
+        font-weight: 900;
+        font-size: 1.3rem;
+            
+        text-align: center;
+    }
+
+    .personal-content {
+       margin-top: 4rem;
+       text-align: left;
+       
+        margin-right: 3rem;
+
+       p {
+           padding: .4rem;
+           cursor: default;
+       }
+
+       .countdown-content {
+           margin-top:1rem;
+            background-color: #bbbbbb;
+            border-radius: .4rem;
+            padding: .3rem;
+            color: #fff;
+           p {
+               font-size: 5rem;
+               text-align:center;
+               cursor: default;
+           }
+       }
+
+       button {
+            width: 100%;
+            border:none;
+            margin-top: .4rem;
+            padding: .6rem;
+            border-radius: .4rem;
+            font-weight: bolder;
+            color: #fff;
+            font-size: .9rem;
+            background-color: #00dd12;
+       }
+
+       button:hover {
+            transition: .5s;   
+            background-color: #008f0c;
+            cursor: pointer;
+       }
+    }
+}
+
+.exercise-content {
+    float:right;
+    border-radius: .4rem;
+    color: #fff;
+    font-weight: 700;
+    padding: .5rem;
+    background-color: #bbbbbb;
+    img {
+        width: 30%;
+    }
+
+    .image-exercise-painel {
+        background-color: #fff;
+        border-radius: .4rem;
+    }
+
+    .buttons-content {
+
+       position: relative;
+       bottom: -8rem;
+
+       padding: .1rem;
+        button {
+            position:relative;
+            width: 45%;
+            bottom: 0;
+
+            padding: .3rem;
+
+            color:#fff;
+            border: none;
+            margin-left: .4rem;
+            border-radius: .1rem;
+            font-size: 1.2rem;
+            border-radius: .4rem;
+        }
+    }
+
+
+    .failed-button {
+        background-color: #fca4a4;
+        cursor: not-allowed;
+    }
+
+    .sucess-button {
+        background-color: rgb(174, 216, 155);
+        cursor: not-allowed;
+    }
+}
