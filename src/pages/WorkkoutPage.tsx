@@ -1,24 +1,62 @@
-import React,{useState,useEffect} from 'react'
+import React,{useState} from 'react'
 
 import {SideBar} from '../components/SideBar'
 
 import '../styles/pages/WorkoutPage.scss'
 import StartingCycle from '../assets/images/starting-cycle.jpg'
+import RunningCycle from '../assets/images/arm.jpg'
 
-import {exercises} from '../resource/exercices'
+import { exercises } from '../resource/exercices'
 import { useAuth } from '../hooks/useAuth'
+import { database } from '../services/firebase'
+
+import { child, push, ref, update,get } from 'firebase/database'
 
 export function WorkoutPage() {
-    const[changeTextButton,setChangeTextButton] = useState<string>('start-countdown')
-    const [isStopped,setisStopped] = useState<boolean>(true)
+    const {user} = useAuth()
+
+    const [isFirstClick,setIsFirstClick] = useState<boolean>(true)
+
+    const[imageWorkout,setImageWorkout] = useState<string>(StartingCycle) 
+
+    const[position,setPosition] = useState<number>(0)
+    const [nameOfExercise,setNameOfExercise] = useState<string>('Prepare-se')
+    const [instructionExercise,setInstructionsExercise] = useState<string>('')
+
+    const[failedButtonClass,setFailedButtonClass] = useState<string>('failed-button-stopped')
+    const[sucessButtonClass,setSucessButtonClass] = useState<string>('sucess-button-stopped')
+
+    const[changeTextButton,setChangeTextButton] = useState<string>('Começar Ciclo')
+    const[changeClassButton,setChangeClassButton] = useState<string>('start-countdown')
+    
+    const [isRunning,setisRunning] = useState<boolean>(true)
+    
     const[seconds,setSeconds] = useState<number>(0)
     const [minutes,setMinutes] = useState<number>(0) 
     const[intervalStop,setIntervalStop] = useState<any>()
 
+    const [xp,setXp] = useState<any>(user?.xp)
+    const [level,setLevel] = useState<any>(user?.level)
+    const [completedCycles,setCompletedCycles] = useState<any>(user?.completedCycles)
+
+    const databaseRef = ref(database)
 
     function startCountdown() {
-        setisStopped(!isStopped)
-        if(isStopped === true) {
+        if(isFirstClick === true) {
+            nextExercise()
+        }
+        setIsFirstClick(false)
+        
+        if(isRunning === true) {
+            setisRunning(false)
+            setImageWorkout(RunningCycle)
+
+            setChangeTextButton('Fazer um pausa')
+            setChangeClassButton('stop-countdown')
+
+            setFailedButtonClass('failed-button-running')
+            setSucessButtonClass('sucess-button-running')
+            
             setIntervalStop(setInterval(()=>{
                 let secondsTimer = 0
                 let minutesTimer = 0
@@ -35,9 +73,109 @@ export function WorkoutPage() {
         }
 
         else {
+            setisRunning(true)
+            setFailedButtonClass('failed-button-stopped')
+            setSucessButtonClass('sucess-button-stopped')
+
+            setChangeTextButton('Recomeçar ciclo')
+            setChangeClassButton('start-countdown')
+
             clearInterval(intervalStop)
         }
         
+    }
+
+    const nextExercise = () => {
+        setPosition(position+1)
+        selectedExercise(position)
+    }
+
+    function selectedExercise(position:number) {
+        const numExercises = exercises.length
+
+        if(position > numExercises) {
+            setisRunning(true)
+            
+            setMinutes(0)
+            setSeconds(0)
+            setPosition(1)
+            clearInterval(intervalStop)
+            
+            setFailedButtonClass('failed-button-stopped')
+            setSucessButtonClass('sucess-button-stopped')
+
+            setChangeTextButton('Começar ciclo')
+            setChangeClassButton('start-countdown')
+            setImageWorkout(StartingCycle)
+            setInstructionsExercise('')
+            setNameOfExercise('Prepare-se')
+           clearInterval(intervalStop)
+           setIsFirstClick(true)
+            return finishCycle()
+        }
+
+        setNameOfExercise(exercises[position].exercise)
+        setInstructionsExercise(exercises[position].instructions)
+    }
+
+    function finishCycle() {
+        let xpUser :any = xp
+        let levelUser:any = level
+        let completedCyclesUser: any = completedCycles
+        
+        let currentXp = xpUser + 80
+        const xpPassed = levelUser * 80
+
+        if(currentXp >= xpPassed) {
+            currentXp = 0
+            levelUser +=1
+        }
+
+        const userUpdated = {
+            name:user?.name,
+            photo:user?.photo,
+            id:user?.id,
+            xp:currentXp,
+            completedCycles:completedCyclesUser+=1,
+            level:levelUser
+        }
+
+        const newPostKey = push(child(ref(database), 'users')).key;
+        const updates:any = {};
+        updates['/users/' + user?.id + '/'] = userUpdated;
+        console.log('...')
+        update(ref(database), updates);
+
+        updatedInformations()
+    }
+
+    function finishCycleWithoutXp() {
+        setMinutes(0)
+        setSeconds(0)
+        setPosition(0)
+        clearInterval(intervalStop)
+        
+        setFailedButtonClass('failed-button-stopped')
+        setSucessButtonClass('sucess-button-stopped')
+
+        setChangeTextButton('Começar ciclo')
+        setChangeClassButton('start-countdown')
+        setImageWorkout(StartingCycle)
+        setInstructionsExercise('')
+        setNameOfExercise('Prepare-se')
+
+
+    }
+
+
+    function updatedInformations() {
+        get(child(databaseRef, `users/${user?.id}`)).then((snapshot) => {
+            const userUpdated = (snapshot.val())
+
+            setCompletedCycles(userUpdated.completedCycles)
+            setXp(userUpdated.xp)
+            setLevel(userUpdated.level)
+        })
     }
 
     return(
@@ -47,31 +185,37 @@ export function WorkoutPage() {
             </aside>
             <main>
                 <div className="profile-content">
-                    <img className="photo-profile" src="https://lh3.googleusercontent.com/a/AATXAJz_fK0qfxZUQhKV-HONCUdGtqInKzKjmpKJ-HjN=s96-c" alt="" />
+                    <img className="photo-profile" src={user?.photo} alt="" />
                     <div className="personal-content">
-                        <p className="name-profile">Gabriel Aparecido da Silva</p>
-                        <p>Level: 0</p>
-                        <p>Xp: 720</p>
-                        <p>Exercícios realiazados: 12</p>
+                        <p className="name-profile">{user?.name}</p>
+                        <p>Level:{level}</p>
+                        <p>Xp: {xp}</p>
+                        <p>Exercícios realiazados: {completedCycles}</p>
                         <div className="countdown-content">
-                            <p className="countdown-painel" onChange={()=>{console.log("erewrw")}}>{minutes>=9?minutes:'0'+minutes}:{seconds>=9?seconds:'0'+seconds}</p>
+                            <p className="countdown-painel">{minutes>9?minutes:'0'+minutes}:{seconds>9?seconds:'0'+seconds}</p>
                             <button 
                                 onClick={startCountdown}
-                                className="start-countdown"
-                            >Começar ciclo</button>
+                                className={changeClassButton}
+                            >{changeTextButton}</button>
                         </div>
                     </div>
                 </div>
                 <div className="exercise-content">
                     <div className="exercise-painel">
                     <div className="image-exercise-painel">
-                        <img src={StartingCycle} alt="" />
+                        <img src={imageWorkout} alt="" />
                     </div>
-                    <h2 className="title-exercise">Prepare-se</h2>
-                    <p className="instructions-exercise"></p>
+                    <h2 className="title-exercise">{nameOfExercise}</h2>
+                    <p className="instructions-exercise">{instructionExercise}</p>
                         <div className="buttons-content">
-                            <button className="failed-button">Falhei</button>
-                            <button className="sucess-button">Próximo</button>
+                            <button 
+                            className={failedButtonClass}
+                            onClick={isRunning?finishCycleWithoutXp:undefined}
+                            >Falhei</button>
+                            <button 
+                            className={sucessButtonClass}
+                            onClick={isRunning?nextExercise:undefined}
+                            >Próximo</button>
                         </div>
                     </div>
                 </div>

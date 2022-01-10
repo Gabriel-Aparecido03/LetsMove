@@ -41,7 +41,7 @@ export function AuthContextProvider(props: AuthContextProviderProps) {
             const userCurrent = auth.currentUser
 
             if(!userCurrent) {
-                 //return navigate('/')
+                return navigate('/')
             }
             else {
                 checkedInDatabase(userCurrent.uid)
@@ -78,7 +78,7 @@ export function AuthContextProvider(props: AuthContextProviderProps) {
                             name: userPreview.name,
                             photo: userPreview.photo,
                             id: userPreview.id,
-                            level: 0,
+                            level: 1,
                             xp: 0,
                             completedCycles: 0
                         }

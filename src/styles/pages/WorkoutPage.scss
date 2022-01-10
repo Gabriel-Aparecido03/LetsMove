@@ -7,6 +7,8 @@
         text-align: center;
         justify-content: center;
 
+        position: relative;
+
         font-family: 'Poppins' ,'sans-serif';
     }
 }
@@ -16,7 +18,7 @@
     width:70%;
 
     img {
-        width: 25%;
+        width: 10rem;
         border-radius: 6rem;
     }
 
@@ -51,7 +53,8 @@
            }
        }
 
-       button {
+       .start-countdown,
+        .stop-countdown{
             width: 100%;
             border:none;
             margin-top: .4rem;
@@ -60,26 +63,42 @@
             font-weight: bolder;
             color: #fff;
             font-size: .9rem;
+            
+       }
+
+       .start-countdown {
             background-color: #00dd12;
        }
 
-       button:hover {
+       .start-countdown:hover {
             transition: .5s;   
             background-color: #008f0c;
             cursor: pointer;
+       }
+
+       .stop-countdown {
+           background-color:#ff0000;
+       }
+
+       .stop-countdown:hover {
+           background-color:#5c0000;
+           cursor:pointer;
+           transition:.5s;
        }
     }
 }
 
 .exercise-content {
+    position: relative;
     float:right;
     border-radius: .4rem;
     color: #fff;
     font-weight: 700;
     padding: .5rem;
     background-color: #bbbbbb;
+    width: 30rem;
     img {
-        width: 30%;
+        max-width: 20rem;
     }
 
     .image-exercise-painel {
@@ -88,21 +107,19 @@
     }
 
     .buttons-content {
-
-       position: relative;
-       bottom: -8rem;
-
        padding: .1rem;
         button {
-            position:relative;
-            width: 45%;
+            width: 48%;
+
+            margin: .3rem;
+
             bottom: 0;
 
             padding: .3rem;
 
             color:#fff;
             border: none;
-            margin-left: .4rem;
+            margin-bottom: .5rem;
             border-radius: .1rem;
             font-size: 1.2rem;
             border-radius: .4rem;
@@ -110,13 +127,25 @@
     }
 
 
-    .failed-button {
-        background-color: #fca4a4;
-        cursor: not-allowed;
+    .failed-button-stopped {
+        display: none;
     }
 
-    .sucess-button {
-        background-color: rgb(174, 216, 155);
-        cursor: not-allowed;
+    .sucess-button-stopped {
+        display: none;
+    }
+
+    .sucess-button-running {
+        background-color: #00dd12;
+        cursor: pointer;
+        right: 0;
+        margin-right: .3rem;
+    }
+
+    .failed-button-running {
+        background-color: #ff0000;
+        cursor:pointer;
+        left: 0;
+        margin-left: .3rem;
     }
 }
